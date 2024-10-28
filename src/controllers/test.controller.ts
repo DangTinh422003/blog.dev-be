@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import testService from "../services/test.service";
+import { Request, Response } from 'express';
+import testService from '@/services/test.service';
 
 class TestController {
   test(req: Request, res: Response): void {

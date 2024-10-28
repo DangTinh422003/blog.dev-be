@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import config from "../configs/mongo.config";
+import config from "@/configs/mongo.config";
 
 const dbConnection = `mongodb+srv://${config.db.url}/${config.db.dbName}?retryWrites=true&w=majority/&appName=${config.db.appName}`;
 
