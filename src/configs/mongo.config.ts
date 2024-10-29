@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config({ path: [".env.local", ".env"] });
+import dotenv from 'dotenv';
+dotenv.config({ path: ['.env.local', '.env'] });
 
 interface Config {
   app: {
@@ -7,8 +7,8 @@ interface Config {
     host: string;
   };
   db: {
-    url: string;
-    appName: string;
+    dbUserName: string;
+    dbPassword: string;
     dbName: string;
   };
 }
@@ -16,33 +16,33 @@ interface Config {
 const dev: Config = {
   app: {
     port: Number(process.env.DEV_APP_PORT) || 3000,
-    host: process.env.DEV_APP_HOST ?? "localhost",
+    host: process.env.DEV_APP_HOST ?? 'localhost',
   },
   db: {
-    url: process.env.MONGO_DB_URL!,
-    appName: process.env.MONGO_DB_APP_NAME!,
+    dbUserName: process.env.MONGO_DB_USER_NAME!,
+    dbPassword: process.env.MONGO_DB_PASSWORD!,
     dbName: process.env.MONGO_DB_NAME!,
   },
 };
 
 const prod = {
   app: {
-    port: Number(process.env.PROD_APP_PORT) || 3000,
-    host: process.env.PROD_APP_HOST ?? "localhost",
+    port: process.env.PROD_APP_PORT || 3000,
+    host: process.env.PROD_APP_HOST || 'localhost',
   },
   db: {
-    url: process.env.MONGO_DB_URL,
-    appName: process.env.MONGO_DB_APP_NAME,
+    dbUserName: process.env.MONGO_DB_USER_NAME,
+    dbPassword: process.env.MONGO_DB_PASSWORD,
     dbName: process.env.MONGO_DB_NAME,
   },
 };
 
-type Env = "dev" | "prod";
+type Env = 'dev' | 'prod';
 
 const configs: Record<Env, Config | typeof prod> = {
   dev,
   prod,
 };
 
-const env: Env = (process.env.NODE_ENV as Env) ?? "dev";
+const env: Env = (process.env.NODE_ENV as Env) ?? 'dev';
 export default configs[env];

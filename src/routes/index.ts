@@ -1,8 +1,8 @@
 import express from 'express';
-import testRouter from '@/routes/test';
+import accessRouter from '@/routes/access';
 
 const router = express.Router();
 
-router.use('/test', testRouter);
+router.use('/access', accessRouter);
 
 export default router;
