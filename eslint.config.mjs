@@ -1,33 +1,24 @@
-import prettier from 'eslint-plugin-prettier';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+import pluginJs from "@eslint/js";
+import simpleImportSort from "eslint-plugin-simple-import-sort"; // Thêm import plugin
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default [
-  ...compat.extends('eslint:recommended', 'plugin:prettier/recommended'),
+  { files: ["**/*.{js,mjs,cjs,ts}"] },
+  { files: ["**/*.js"], languageOptions: { sourceType: "script" } },
+  { languageOptions: { globals: globals.browser } },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    plugins: {
-      prettier,
-    },
-
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: 2020,
-      sourceType: 'module',
-    },
-
+    plugins: { "simple-import-sort": simpleImportSort }, // Khai báo plugin
     rules: {
-      'prettier/prettier': 'error',
+      eqeqeq: "off",
+      "no-unused-vars": "warn",
+      "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
+      "@typescript-eslint/no-unsafe-function-type": 0,
+      "@typescript-eslint/no-unused-vars": "warn",
+      "simple-import-sort/imports": "error", // Quy tắc sắp xếp import
+      "simple-import-sort/exports": "error", // Quy tắc sắp xếp export
     },
   },
 ];

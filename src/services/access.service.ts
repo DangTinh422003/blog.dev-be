@@ -1,8 +1,11 @@
-import { ConflictError } from '@/core/error.response';
-import { OkResponse } from '@/core/success.response';
-import userModel from '@/models/user.model';
-import accountModel from '@/models/account.model';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+
+import { ConflictError } from "@/core/error.response";
+import { OkResponse } from "@/core/success.response";
+import accountModel from "@/models/account.model";
+import userModel from "@/models/user.model";
+import tokenService from "@/services/token.service";
+import { validateEmail } from "@/utils/index";
 
 class AccessService {
   async createAccount({
@@ -20,11 +23,11 @@ class AccessService {
     ]);
 
     if (emailCheck) {
-      throw new ConflictError('Email is already taken');
+      throw new ConflictError("Email is already taken");
     }
 
     if (usernameCheck) {
-      throw new ConflictError('Username is already taken');
+      throw new ConflictError("Username is already taken");
     }
 
     const SALT = 10;
@@ -40,7 +43,61 @@ class AccessService {
       userId: newUser._id,
     });
 
-    return new OkResponse(newAccount, 'Create account successfully');
+    return new OkResponse(newAccount, "Create account successfully");
+  }
+
+  async login({ email, password }: { email: string; password: string }) {
+    if (!email || !password) {
+      throw new ConflictError("Email or password is missing");
+    }
+
+    if (!validateEmail(email)) {
+      throw new ConflictError("Email is invalid");
+    }
+
+    const userInfo = await userModel.findOne({ email }).lean();
+    if (!userInfo) {
+      throw new ConflictError("Email is not found");
+    }
+
+    const accountInfo = await accountModel
+      .findOne({ userId: userInfo._id })
+      .lean();
+    if (!accountInfo) {
+      throw new ConflictError("Account is not found");
+    }
+
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      accountInfo.password,
+    );
+    if (!isPasswordMatch) {
+      throw new ConflictError("Password is incorrect");
+    }
+
+    const [accessToken, refreshToken] = await Promise.all([
+      tokenService.generateToken(
+        userInfo,
+        process.env.ACCESS_TOKEN_PRIVATE_KEY!,
+        "3h",
+      ),
+      tokenService.generateToken(
+        userInfo,
+        process.env.REFRESH_TOKEN_PRIVATE_KEY!,
+        "7 days",
+      ),
+    ]);
+
+    return new OkResponse(
+      {
+        user: userInfo,
+        token: {
+          accessToken,
+          refreshToken,
+        },
+      },
+      "Login successfully",
+    );
   }
 }
 

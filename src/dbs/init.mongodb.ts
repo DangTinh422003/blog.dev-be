@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
-import config from '@/configs/mongo.config';
+import mongoose from "mongoose";
+
+import config from "@/configs/mongo.config";
 
 const dbConnection = `mongodb+srv://${config.db.dbUserName}:${config.db.dbPassword}@${config.db.dbName}.r3wrt.mongodb.net/${config.db.dbName}?retryWrites=true&w=majority`;
 class Database {
@@ -9,20 +10,20 @@ class Database {
 
   public static instance: Database;
 
-  connect(type = 'mongo') {
+  connect(type = "mongo") {
     switch (type) {
-      case 'mongo':
+      case "mongo":
         mongoose
           .connect(dbConnection)
           .then(() => {
-            console.log('Connected to MongoDB');
+            console.log("Connected to MongoDB");
           })
           .catch((error) => {
-            console.log('Error connecting to MongoDB');
+            console.log("Error connecting to MongoDB");
             console.error(error);
           });
         break;
-      case 'mysql':
+      case "mysql":
         break;
       default:
         break;

@@ -6,10 +6,10 @@ export const SuccessCode = {
 };
 
 export const ReasonSuccessCode = {
-  OK: 'OK',
-  CREATED: 'Created',
-  ACCEPTED: 'Accepted',
-  NO_CONTENT: 'No content',
+  OK: "OK",
+  CREATED: "Created",
+  ACCEPTED: "Accepted",
+  NO_CONTENT: "No content",
 };
 
 export class SuccessResponse<T> {
