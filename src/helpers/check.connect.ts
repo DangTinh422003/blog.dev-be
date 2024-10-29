@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import os from "os";
-import process from "process";
+import mongoose from 'mongoose';
+import os from 'os';
+import process from 'process';
 
 const countConnect = () => {
   const numberConnecttions = mongoose.connections.length;

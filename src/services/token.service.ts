@@ -1,4 +1,4 @@
-import JWT from "jsonwebtoken";
+import JWT from 'jsonwebtoken';
 
 class TokenService {
   generateToken<T extends string | object | Buffer>(

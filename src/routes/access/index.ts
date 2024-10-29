@@ -1,7 +1,7 @@
-import express from "express";
+import express from 'express';
 
-import accessController from "@/controllers/access.controller";
-import { handleError } from "@/middlewares/handleError";
+import accessController from '@/controllers/access.controller';
+import { handleError } from '@/middlewares/handleError';
 
 const accessRouter = express.Router();
 

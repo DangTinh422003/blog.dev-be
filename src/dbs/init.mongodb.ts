@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-import config from "@/configs/mongo.config";
+import config from '@/configs/mongo.config';
 
 const dbConnection = `mongodb+srv://${config.db.dbUserName}:${config.db.dbPassword}@${config.db.dbName}.r3wrt.mongodb.net/${config.db.dbName}?retryWrites=true&w=majority`;
 class Database {

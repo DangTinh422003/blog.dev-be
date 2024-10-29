@@ -1,11 +1,11 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
-import { ConflictError } from "@/core/error.response";
-import { OkResponse } from "@/core/success.response";
-import accountModel from "@/models/account.model";
-import userModel from "@/models/user.model";
-import tokenService from "@/services/token.service";
-import { validateEmail } from "@/utils/index";
+import { ConflictError } from '@/core/error.response';
+import { OkResponse } from '@/core/success.response';
+import accountModel from '@/models/account.model';
+import userModel from '@/models/user.model';
+import tokenService from '@/services/token.service';
+import { validateEmail } from '@/utils/index';
 
 class AccessService {
   async createAccount({

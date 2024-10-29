@@ -1,15 +1,15 @@
-import "@/dbs/init.mongodb";
+import '@/dbs/init.mongodb';
 
-import compression from "compression";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import express, { NextFunction, Request, Response } from "express";
-import helmet from "helmet";
-import morgan from "morgan";
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express, { NextFunction, Request, Response } from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
-import { CustomError } from "@/@types/index";
-import { corsConfig } from "@/configs/cors.config";
-import router from "@/routes";
+import { CustomError } from '@/@types/index';
+import { corsConfig } from '@/configs/cors.config';
+import router from '@/routes';
 
 const app = express();
 

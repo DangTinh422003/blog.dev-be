@@ -1,6 +1,6 @@
-import express from "express";
+import express from 'express';
 
-import accessRouter from "@/routes/access";
+import accessRouter from '@/routes/access';
 
 const router = express.Router();
 

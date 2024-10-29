@@ -1,4 +1,4 @@
-import { CorsOptions } from "cors";
+import { CorsOptions } from 'cors';
 
 export const corsConfig: CorsOptions = {
   optionsSuccessStatus: 200,
