@@ -14,7 +14,7 @@ const accountSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      minlength: 6,
+      minlength: 5,
       maxlength: 20,
     },
     password: {
