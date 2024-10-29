@@ -1,4 +1,4 @@
-import JWT from 'jsonwebtoken';
+import JWT from "jsonwebtoken";
 
 class TokenService {
   generateToken<T extends string | object | Buffer>(
@@ -6,7 +6,7 @@ class TokenService {
     privateKey: string,
     expiresIn: string,
   ) {
-    return JWT.sign(payload, privateKey, { expiresIn, algorithm: 'HS256' });
+    return JWT.sign(payload, privateKey, { expiresIn, algorithm: "HS256" });
   }
 
   verifyToken<T>(token: string, privateKey: string) {
