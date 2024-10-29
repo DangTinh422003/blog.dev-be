@@ -5,6 +5,10 @@ class AccessController {
   async signUp(req: Request, res: Response) {
     res.send(await accessService.createAccount(req.body));
   }
+
+  async signIn(req: Request, res: Response) {
+    res.send(await accessService.login(req.body));
+  }
 }
 
 const accessController = new AccessController();
