@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
-import { ConflictError } from '@/core/error.response';
-import { OkResponse } from '@/core/success.response';
-import accountModel from '@/models/account.model';
-import userModel from '@/models/user.model';
-import tokenService from '@/services/token.service';
-import { validateEmail } from '@/utils/index';
+import { ConflictError } from "@/core/error.response";
+import { OkResponse } from "@/core/success.response";
+import accountModel from "@/models/account.model";
+import userModel from "@/models/user.model";
+import tokenService from "@/services/token.service";
+import { validateEmail } from "@/utils/index";
 
 class AccessService {
   async createAccount({
@@ -19,7 +19,7 @@ class AccessService {
   }) {
     const [emailCheck, usernameCheck] = await Promise.all([
       userModel.findOne({ email }).lean(),
-      userModel.findOne({ username }).lean(),
+      accountModel.findOne({ username }).lean(),
     ]);
 
     if (emailCheck) {
@@ -43,7 +43,16 @@ class AccessService {
       userId: newUser._id,
     });
 
-    return new OkResponse(newAccount, "Create account successfully");
+    const { password: userPwd, ...newAccountWithoutPassword } =
+      newAccount.toObject();
+
+    return new OkResponse(
+      {
+        user: newUser,
+        account: newAccountWithoutPassword,
+      },
+      "Create account successfully",
+    );
   }
 
   async login({ email, password }: { email: string; password: string }) {

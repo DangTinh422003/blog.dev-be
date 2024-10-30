@@ -17,7 +17,11 @@ export class SuccessResponse<T> {
     public data: T,
     public message: string,
     public status: number,
-  ) {}
+  ) {
+    this.data = data;
+    this.message = message;
+    this.status = status;
+  }
 }
 
 export class OkResponse<T> extends SuccessResponse<T> {
