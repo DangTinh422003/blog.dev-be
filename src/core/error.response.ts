@@ -4,6 +4,7 @@ export const StatusCode = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   CONFLICT: 409,
+  GONE: 410,
   INTERNAL_SERVER_ERROR: 500,
 };
 
@@ -13,6 +14,7 @@ export const ReasonStatusCode = {
   FORBIDDEN: 'Forbidden',
   NOT_FOUND: 'Not found',
   CONFLICT: 'Conflict',
+  GONE: 'Gone',
   INTERNAL_SERVER_ERROR: 'Internal server error',
 };
 
@@ -58,5 +60,11 @@ export class ForbiddenError extends ErrorResponse {
 export class InternalServerError extends ErrorResponse {
   constructor(message = ReasonStatusCode.INTERNAL_SERVER_ERROR) {
     super(message, StatusCode.INTERNAL_SERVER_ERROR);
+  }
+}
+
+export class GoneError extends ErrorResponse {
+  constructor(message = ReasonStatusCode.GONE) {
+    super(message, StatusCode.GONE);
   }
 }
