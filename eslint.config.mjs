@@ -1,5 +1,5 @@
 import pluginJs from "@eslint/js";
-import simpleImportSort from "eslint-plugin-simple-import-sort"; // Thêm import plugin
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -10,15 +10,16 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    plugins: { "simple-import-sort": simpleImportSort }, // Khai báo plugin
+    plugins: { "simple-import-sort": simpleImportSort }, 
     rules: {
       eqeqeq: "off",
       "no-unused-vars": "warn",
       "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
       "@typescript-eslint/no-unsafe-function-type": 0,
       "@typescript-eslint/no-unused-vars": "warn",
-      "simple-import-sort/imports": "error", // Quy tắc sắp xếp import
-      "simple-import-sort/exports": "error", // Quy tắc sắp xếp export
+      "simple-import-sort/imports": "error", 
+      "simple-import-sort/exports": "error", 
+      "@typescript-eslint/no-explicit-any" : 0
     },
   },
 ];

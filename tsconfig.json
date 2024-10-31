@@ -13,8 +13,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./src/@types/*"]
   },
-  "include": ["*.ts"],
+  "include": ["./src"],
+  "ts-node": {
+    "files": true
+  },
   "exclude": ["node_modules"]
 }

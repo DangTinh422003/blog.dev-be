@@ -16,7 +16,7 @@ const app = express();
 app.use(cors(corsConfig));
 app.use(helmet());
 app.use(compression());
-app.use(morgan("short"));
+app.use(morgan('short'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(router);
 
 app.use((req, res, next) => {
-  const error = new CustomError("Not found", 404);
+  const error = new CustomError('Not found', 404);
   next(error);
 });
 
@@ -33,7 +33,7 @@ app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
 
   res.status(status).json({
     status,
-    message: err.message || "Internal server error",
+    message: err.message || 'Internal server error',
   });
 });
 
