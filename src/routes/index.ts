@@ -6,6 +6,9 @@ import accessRouter from '@/routes/access';
 
 const router = express.Router();
 
-router.use('/access', handleError(isAuthenticated), handleError(accessRouter));
+router.use('/access', accessRouter);
+router.use('/test', handleError(isAuthenticated), (req, res, next) => {
+  res.send('test');
+});
 
 export default router;

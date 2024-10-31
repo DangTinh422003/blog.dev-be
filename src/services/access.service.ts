@@ -1,6 +1,11 @@
 import bcrypt from 'bcrypt';
+import { JwtPayload } from 'jsonwebtoken';
 
-import { ConflictError, NotFoundError } from '@/core/error.response';
+import {
+  ConflictError,
+  NotFoundError,
+  UnauthorizedError,
+} from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
 import accountModel from '@/models/account.model';
 import userModel from '@/models/user.model';
@@ -88,7 +93,7 @@ class AccessService {
       tokenService.generateToken(
         userInfo,
         process.env.ACCESS_TOKEN_PRIVATE_KEY!,
-        '5s',
+        '1s',
       ),
       tokenService.generateToken(
         userInfo,
@@ -107,6 +112,33 @@ class AccessService {
       },
       'Login successfully',
     );
+  }
+
+  async refreshToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedError('Refresh token is missing');
+    }
+
+    try {
+      const { exp, iat, ...refressTokenDecoded }: JwtPayload =
+        await tokenService.verifyToken(
+          refreshToken,
+          process.env.REFRESH_TOKEN_PRIVATE_KEY!,
+        );
+
+      const newAccessToken = await tokenService.generateToken(
+        refressTokenDecoded,
+        process.env.ACCESS_TOKEN_PRIVATE_KEY!,
+        '5s',
+      );
+
+      return new OkResponse({
+        accessToken: newAccessToken,
+        userInfo: refressTokenDecoded,
+      });
+    } catch (error) {
+      throw new UnauthorizedError('Refresh token is invalid');
+    }
   }
 }
 

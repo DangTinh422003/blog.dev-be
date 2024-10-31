@@ -35,6 +35,21 @@ class AccessController {
 
     res.send(new OkResponse('Sign out successfully'));
   }
+
+  async refreshToken(req: Request, res: Response) {
+    const refreshToken = req.cookies.refreshToken;
+
+    const { data, ...rest } = await accessService.refreshToken(refreshToken);
+
+    res.cookie('accessToken', data.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: ms('3h'),
+    });
+
+    res.send({ data, ...rest });
+  }
 }
 
 const accessController = new AccessController();
