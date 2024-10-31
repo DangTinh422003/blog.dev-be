@@ -6,5 +6,6 @@ const accessRouter = express.Router();
 
 accessRouter.post('/sign-up', accessController.signUp);
 accessRouter.post('/sign-in', accessController.signIn);
+accessRouter.post('/sign-out', accessController.signOut);
 
 export default accessRouter;

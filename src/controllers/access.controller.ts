@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ms from 'ms';
 
+import { OkResponse } from '@/core/success.response';
 import accessService from '@/services/access.service';
 
 class AccessController {
@@ -26,6 +27,13 @@ class AccessController {
     });
 
     res.send({ data, ...rest });
+  }
+
+  async signOut(req: Request, res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
+    res.send(new OkResponse('Sign out successfully'));
   }
 }
 
