@@ -1,21 +1,14 @@
 import { model, Schema } from 'mongoose';
 
-const DOCUMENT_NAME = "Account";
-const COLLECTION_NAME = "Accounts";
+const DOCUMENT_NAME = 'Account';
+const COLLECTION_NAME = 'Accounts';
 
 const accountSchema = new Schema(
   {
-    userId: {
+    email: {
       type: String,
       required: true,
       unique: true,
-    },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      minlength: 5,
-      maxlength: 20,
     },
     password: {
       type: String,

@@ -14,25 +14,30 @@ import { validateEmail } from '@/utils/index';
 
 class AccessService {
   async createAccount({
-    username,
     password,
+    confirmPassword,
     email,
   }: {
-    username: string;
     password: string;
+    confirmPassword: string;
     email: string;
   }) {
-    const [emailCheck, usernameCheck] = await Promise.all([
-      userModel.findOne({ email }).lean(),
-      accountModel.findOne({ username }).lean(),
-    ]);
+    if (!email || !password || !confirmPassword) {
+      throw new ConflictError('Email, password or confirm password is missing');
+    }
+
+    if (!validateEmail(email)) {
+      throw new ConflictError('Email is invalid');
+    }
+
+    if (password !== confirmPassword) {
+      throw new ConflictError('Password and confirm password are not match');
+    }
+
+    const emailCheck = await userModel.findOne({ email }).lean();
 
     if (emailCheck) {
       throw new ConflictError('Email is already taken');
-    }
-
-    if (usernameCheck) {
-      throw new ConflictError('Username is already taken');
     }
 
     const SALT = 10;
@@ -43,9 +48,8 @@ class AccessService {
     });
 
     const newAccount = await accountModel.create({
-      username,
+      email,
       password: hashPassword,
-      userId: newUser._id,
     });
 
     const { password: userPwd, ...newAccountWithoutPassword } =
