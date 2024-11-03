@@ -78,9 +78,7 @@ class AccessService {
       throw new NotFoundError('Email is not found');
     }
 
-    const accountInfo = await accountModel
-      .findOne({ userId: userInfo._id })
-      .lean();
+    const accountInfo = await accountModel.findOne({ email }).lean();
     if (!accountInfo) {
       throw new NotFoundError('Account is not found');
     }
