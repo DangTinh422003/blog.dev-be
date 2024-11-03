@@ -75,12 +75,12 @@ class AccessService {
 
     const userInfo = await userModel.findOne({ email }).lean();
     if (!userInfo) {
-      throw new NotFoundError('Email is not found');
+      throw new ConflictError('Email is not found');
     }
 
     const accountInfo = await accountModel.findOne({ email }).lean();
     if (!accountInfo) {
-      throw new NotFoundError('Account is not found');
+      throw new ConflictError('Account is not found');
     }
 
     const isPasswordMatch = await bcrypt.compare(
