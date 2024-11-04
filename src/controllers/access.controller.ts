@@ -41,11 +41,18 @@ class AccessController {
 
     const { data, ...rest } = await accessService.refreshToken(refreshToken);
 
-    res.cookie('accessToken', data.accessToken, {
+    res.cookie('accessToken', data.token.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: ms('3h'),
+    });
+
+    res.cookie('refreshToken', data.token.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: ms('7 days'),
     });
 
     res.send({ data, ...rest });

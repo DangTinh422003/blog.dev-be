@@ -1,11 +1,7 @@
 import bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken';
 
-import {
-  ConflictError,
-  NotFoundError,
-  UnauthorizedError,
-} from '@/core/error.response';
+import { ConflictError, UnauthorizedError } from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
 import accountModel from '@/models/account.model';
 import userModel from '@/models/user.model';
@@ -95,8 +91,9 @@ class AccessService {
       tokenService.generateToken(
         userInfo,
         process.env.ACCESS_TOKEN_PRIVATE_KEY!,
-        '1s',
+        '3h',
       ),
+
       tokenService.generateToken(
         userInfo,
         process.env.REFRESH_TOKEN_PRIVATE_KEY!,
@@ -128,15 +125,26 @@ class AccessService {
           process.env.REFRESH_TOKEN_PRIVATE_KEY!,
         );
 
-      const newAccessToken = await tokenService.generateToken(
-        refressTokenDecoded,
-        process.env.ACCESS_TOKEN_PRIVATE_KEY!,
-        '5s',
-      );
+      const [newAccessToken, newRefreshToken] = await Promise.all([
+        tokenService.generateToken(
+          refressTokenDecoded,
+          process.env.ACCESS_TOKEN_PRIVATE_KEY!,
+          '3h',
+        ),
+
+        tokenService.generateToken(
+          refressTokenDecoded,
+          process.env.REFRESH_TOKEN_PRIVATE_KEY!,
+          '7 days',
+        ),
+      ]);
 
       return new OkResponse({
-        accessToken: newAccessToken,
         userInfo: refressTokenDecoded,
+        token: {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        },
       });
     } catch (error) {
       throw new UnauthorizedError('Refresh token is invalid');
