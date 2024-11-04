@@ -16,7 +16,7 @@ class AccessController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: ms('3h'),
+      maxAge: ms('7 days'),
     });
 
     res.cookie('refreshToken', data.token.refreshToken, {
@@ -45,7 +45,7 @@ class AccessController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: ms('3h'),
+      maxAge: ms('7 days'),
     });
 
     res.cookie('refreshToken', data.token.refreshToken, {
