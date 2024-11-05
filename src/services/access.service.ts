@@ -125,6 +125,10 @@ class AccessService {
           process.env.REFRESH_TOKEN_PRIVATE_KEY!,
         );
 
+      if (!refressTokenDecoded.email) {
+        throw new UnauthorizedError('Refresh token is invalid');
+      }
+
       const [newAccessToken, newRefreshToken] = await Promise.all([
         tokenService.generateToken(
           refressTokenDecoded,

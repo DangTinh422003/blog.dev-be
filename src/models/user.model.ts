@@ -13,6 +13,7 @@ const userSchema = new Schema(
     },
     fullName: {
       type: String,
+      default: '',
     },
     followerNumber: {
       type: Number,

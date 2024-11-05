@@ -12,13 +12,13 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const accessToken = req.cookies.accessToken;
-
-  if (!accessToken) {
-    throw new UnauthorizedError('Unauthorized');
-  }
-
   try {
+    const accessToken = req.cookies.accessToken;
+
+    if (!accessToken) {
+      throw new UnauthorizedError('Unauthorized');
+    }
+
     const accessTokenDecoded = await tokenService.verifyToken(
       accessToken,
       process.env.ACCESS_TOKEN_PRIVATE_KEY!,
