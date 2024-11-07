@@ -7,8 +7,8 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { CustomError } from '@/@types/index';
 import { corsConfig } from '@/configs/cors.config';
+import { CustomError } from '@/core/error.response';
 import router from '@/routes';
 
 const app = express();

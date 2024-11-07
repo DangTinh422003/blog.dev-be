@@ -18,6 +18,16 @@ export const ReasonStatusCode = {
   INTERNAL_SERVER_ERROR: 'Internal server error',
 };
 
+export class CustomError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+    Object.setPrototypeOf(this, CustomError.prototype);
+  }
+}
+
 export class ErrorResponse extends Error {
   constructor(
     public message: string,
