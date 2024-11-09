@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "rimraf ./dist && tsc && tsc-alias",
+    "build": "rimraf ./dist && tsc --project tsconfig.prod.json && tsc-alias",
     "start": "node dist/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
