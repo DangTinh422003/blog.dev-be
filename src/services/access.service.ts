@@ -1,7 +1,11 @@
 import bcrypt from 'bcrypt';
 import { JwtPayload } from 'jsonwebtoken';
 
-import { ConflictError, UnauthorizedError } from '@/core/error.response';
+import {
+  BadRequestError,
+  ConflictError,
+  UnauthorizedError,
+} from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
 import accountModel from '@/models/account.model';
 import userModel from '@/models/user.model';
@@ -19,15 +23,17 @@ class AccessService {
     email: string;
   }) {
     if (!email || !password || !confirmPassword) {
-      throw new ConflictError('Email, password or confirm password is missing');
+      throw new BadRequestError(
+        'Email, password or confirm password is missing',
+      );
     }
 
     if (!validateEmail(email)) {
-      throw new ConflictError('Email is invalid');
+      throw new BadRequestError('Email is invalid');
     }
 
     if (password !== confirmPassword) {
-      throw new ConflictError('Password and confirm password are not match');
+      throw new BadRequestError('Password and confirm password are not match');
     }
 
     const emailCheck = await userModel.findOne({ email }).lean();
@@ -62,16 +68,16 @@ class AccessService {
 
   async login({ email, password }: { email: string; password: string }) {
     if (!email || !password) {
-      throw new ConflictError('Email or password is missing');
+      throw new BadRequestError('Email or password is missing');
     }
 
     if (!validateEmail(email)) {
-      throw new ConflictError('Email is invalid');
+      throw new BadRequestError('Email is invalid');
     }
 
     const userInfo = await userModel.findOne({ email }).lean();
     if (!userInfo) {
-      throw new ConflictError('Email is not found');
+      throw new BadRequestError('Email is not found');
     }
 
     const accountInfo = await accountModel.findOne({ email }).lean();
@@ -84,7 +90,7 @@ class AccessService {
       accountInfo.password,
     );
     if (!isPasswordMatch) {
-      throw new ConflictError('Password is incorrect');
+      throw new BadRequestError('Password is incorrect');
     }
 
     const [accessToken, refreshToken] = await Promise.all([

@@ -26,7 +26,12 @@ class AccessController {
       maxAge: ms('7 days'),
     });
 
-    res.send({ user: data.user, ...rest });
+    res.send({
+      data: {
+        user: data.user,
+      },
+      ...rest,
+    });
   }
 
   async signOut(req: Request, res: Response) {
