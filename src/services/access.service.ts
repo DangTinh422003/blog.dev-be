@@ -1,156 +1,94 @@
 import bcrypt from 'bcrypt';
-import { JwtPayload } from 'jsonwebtoken';
-
-import {
-  BadRequestError,
-  ConflictError,
-  UnauthorizedError,
-} from '@/core/error.response';
+import { BadRequestError, ForbiddenError, UnauthorizedError } from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
 import accountModel from '@/models/account.model';
-import userModel from '@/models/user.model';
+import userModel, { User } from '@/models/user.model';
 import tokenService from '@/services/token.service';
-import { validateEmail } from '@/utils/index';
+import { JwtPayload } from 'jsonwebtoken';
 
 class AccessService {
-  async createAccount({
+  async signUp({
+    username,
     password,
-    confirmPassword,
     email,
   }: {
+    username: string;
     password: string;
     confirmPassword: string;
     email: string;
   }) {
-    if (!email || !password || !confirmPassword) {
-      throw new BadRequestError(
-        'Email, password or confirm password is missing',
-      );
-    }
-
-    if (!validateEmail(email)) {
-      throw new BadRequestError('Email is invalid');
-    }
-
-    if (password !== confirmPassword) {
-      throw new BadRequestError('Password and confirm password are not match');
-    }
-
-    const emailCheck = await userModel.findOne({ email }).lean();
-
-    if (emailCheck) {
-      throw new ConflictError('Email is already taken');
-    }
-
     const SALT = 10;
     const hashPassword = await bcrypt.hash(password, SALT);
 
-    const newUser = await userModel.create({
-      email,
-    });
+    const [newUser, newAccount] = await Promise.all([
+      userModel.create({
+        email,
+        fullName: username,
+      }),
+      accountModel.create({
+        email,
+        password: hashPassword,
+      }),
+    ]);
 
-    const newAccount = await accountModel.create({
-      email,
-      password: hashPassword,
-    });
+    if (!newUser || !newAccount) {
+      throw new BadRequestError('Create account failed');
+    }
 
-    const { password: userPwd, ...newAccountWithoutPassword } =
-      newAccount.toObject();
-
-    return new OkResponse(
-      {
-        user: newUser,
-        account: newAccountWithoutPassword,
-      },
-      'Create account successfully',
-    );
+    return new OkResponse('Create account successfully');
   }
 
-  async login({ email, password }: { email: string; password: string }) {
-    if (!email || !password) {
-      throw new BadRequestError('Email or password is missing');
-    }
-
-    if (!validateEmail(email)) {
-      throw new BadRequestError('Email is invalid');
-    }
-
-    const userInfo = await userModel.findOne({ email }).lean();
-    if (!userInfo) {
-      throw new BadRequestError('Email is not found');
-    }
-
-    const accountInfo = await accountModel.findOne({ email }).lean();
-    if (!accountInfo) {
-      throw new ConflictError('Account is not found');
-    }
-
-    const isPasswordMatch = await bcrypt.compare(
-      password,
-      accountInfo.password,
-    );
-    if (!isPasswordMatch) {
-      throw new BadRequestError('Password is incorrect');
+  async signIn({ email }: { email: string }) {
+    const userHolder = await userModel.findOne({ email }).lean();
+    if (!userHolder) {
+      throw new ForbiddenError('User is not found');
     }
 
     const [accessToken, refreshToken] = await Promise.all([
       tokenService.generateToken(
-        userInfo,
+        userHolder,
         process.env.ACCESS_TOKEN_PRIVATE_KEY!,
         '3h',
       ),
-
       tokenService.generateToken(
-        userInfo,
+        userHolder,
         process.env.REFRESH_TOKEN_PRIVATE_KEY!,
-        '7 days',
+        '5s',
       ),
     ]);
 
-    return new OkResponse(
-      {
-        user: userInfo,
-        token: {
-          accessToken,
-          refreshToken,
-        },
+    return new OkResponse('Login successfully', {
+      user: userHolder,
+      token: {
+        accessToken,
+        refreshToken,
       },
-      'Login successfully',
-    );
+    });
   }
 
   async refreshToken(refreshToken: string) {
-    if (!refreshToken) {
-      throw new UnauthorizedError('Refresh token is missing');
-    }
-
     try {
-      const { exp, iat, ...refressTokenDecoded }: JwtPayload =
+      const { iat, exp, ...decoded }: JwtPayload =
         await tokenService.verifyToken(
           refreshToken,
           process.env.REFRESH_TOKEN_PRIVATE_KEY!,
         );
 
-      if (!refressTokenDecoded.email) {
-        throw new UnauthorizedError('Refresh token is invalid');
-      }
-
       const [newAccessToken, newRefreshToken] = await Promise.all([
         tokenService.generateToken(
-          refressTokenDecoded,
+          decoded,
           process.env.ACCESS_TOKEN_PRIVATE_KEY!,
           '3h',
         ),
-
         tokenService.generateToken(
-          refressTokenDecoded,
+          decoded,
           process.env.REFRESH_TOKEN_PRIVATE_KEY!,
-          '7 days',
+          '5s',
         ),
       ]);
 
-      return new OkResponse({
-        userInfo: refressTokenDecoded,
+      return new OkResponse('', {
+        userInfo: decoded,
         token: {
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,

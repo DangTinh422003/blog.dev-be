@@ -14,9 +14,9 @@ export const ReasonSuccessCode = {
 
 export class SuccessResponse<T> {
   constructor(
-    public data: T,
     public message: string,
     public status: number,
+    public data?: T,
   ) {
     this.data = data;
     this.message = message;
@@ -25,25 +25,25 @@ export class SuccessResponse<T> {
 }
 
 export class OkResponse<T> extends SuccessResponse<T> {
-  constructor(data: T, message = ReasonSuccessCode.OK) {
-    super(data, message, SuccessCode.OK);
+  constructor(message = ReasonSuccessCode.OK, data?: T) {
+    super(message, SuccessCode.OK, data);
   }
 }
 
 export class CreatedResponse<T> extends SuccessResponse<T> {
-  constructor(data: T, message = ReasonSuccessCode.CREATED) {
-    super(data, message, SuccessCode.CREATED);
+  constructor(message = ReasonSuccessCode.CREATED, data?: T) {
+    super(message, SuccessCode.CREATED, data);
   }
 }
 
 export class AcceptedResponse<T> extends SuccessResponse<T> {
   constructor(data: T, message = ReasonSuccessCode.ACCEPTED) {
-    super(data, message, SuccessCode.ACCEPTED);
+    super(message, SuccessCode.ACCEPTED, data);
   }
 }
 
 export class NoContentResponse extends SuccessResponse<null> {
   constructor(message = ReasonSuccessCode.NO_CONTENT) {
-    super(null, message, SuccessCode.NO_CONTENT);
+    super(message, SuccessCode.NO_CONTENT);
   }
 }

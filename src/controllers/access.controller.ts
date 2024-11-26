@@ -6,20 +6,21 @@ import accessService from '@/services/access.service';
 
 class AccessController {
   async signUp(req: Request, res: Response) {
-    res.send(await accessService.createAccount(req.body));
+    res.send(await accessService.signUp(req.body));
   }
 
   async signIn(req: Request, res: Response) {
-    const { data, ...rest } = await accessService.login(req.body);
+    const { data } = await accessService.signIn(req.body);
+    const userHolder = data!;
 
-    res.cookie('accessToken', data.token.accessToken, {
+    res.cookie('accessToken', userHolder.token.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: ms('7 days'),
     });
 
-    res.cookie('refreshToken', data.token.refreshToken, {
+    res.cookie('refreshToken', userHolder.token.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
@@ -28,9 +29,8 @@ class AccessController {
 
     res.send({
       data: {
-        user: data.user,
+        user: userHolder.user,
       },
-      ...rest,
     });
   }
 
@@ -43,24 +43,25 @@ class AccessController {
 
   async refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
-
     const { data, ...rest } = await accessService.refreshToken(refreshToken);
 
-    res.cookie('accessToken', data.token.accessToken, {
+    res.cookie('accessToken', data!.token.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: ms('7 days'),
     });
 
-    res.cookie('refreshToken', data.token.refreshToken, {
+    res.cookie('refreshToken', data!.token.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: ms('7 days'),
     });
 
-    res.send({ data, ...rest });
+    console.log('🚀 ~ AccessController ~ refreshToken ~ data:', data);
+
+    res.send({ data });
   }
 }
 
