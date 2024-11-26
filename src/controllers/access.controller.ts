@@ -59,9 +59,7 @@ class AccessController {
       maxAge: ms('7 days'),
     });
 
-    console.log('🚀 ~ AccessController ~ refreshToken ~ data:', data);
-
-    res.send({ data });
+    res.send({ data, ...rest });
   }
 }
 
