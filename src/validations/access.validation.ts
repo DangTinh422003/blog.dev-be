@@ -4,25 +4,31 @@ import {
   UnauthorizedError,
 } from '@/core/error.response';
 import userModel from '@/models/user.model';
-import { validateEmail } from '@/utils';
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import accountModel from '@/models/account.model';
+import Joi from 'joi';
+
+const schema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  confirmPassword: Joi.ref('password'),
+  username: Joi.string().required(),
+});
 
 class AccessValidation {
   async signUp(req: Request, res: Response, next: NextFunction) {
     const { email, password, confirmPassword, username } = req.body;
 
-    if (!email || !password || !confirmPassword || !username) {
-      throw new BadRequestError('Fields are missing');
-    }
+    const { error } = schema.validate({
+      email,
+      password,
+      confirmPassword,
+      username,
+    });
 
-    if (!validateEmail(email)) {
-      throw new BadRequestError('Email is invalid');
-    }
-
-    if (password !== confirmPassword) {
-      throw new BadRequestError('Password and confirm password are not match');
+    if (error) {
+      throw new BadRequestError(error.message);
     }
 
     const emailCheck = await userModel.findOne({ email }).lean();
@@ -36,8 +42,13 @@ class AccessValidation {
   async signIn(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      throw new BadRequestError('Fields are missing');
+    const { error } = schema.validate({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw new BadRequestError(error.message);
     }
 
     const accountHolder = await accountModel.findOne({ email }).lean();
