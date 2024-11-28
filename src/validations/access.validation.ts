@@ -8,6 +8,7 @@ import { validateEmail } from '@/utils';
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import accountModel from '@/models/account.model';
+import Joi from 'joi';
 
 class AccessValidation {
   async signUp(req: Request, res: Response, next: NextFunction) {

@@ -18,6 +18,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
@@ -25,6 +26,7 @@
     "eslint-define-config": "^2.1.0",
     "express": "^4.21.0",
     "immer": "^10.1.1",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
     "ms": "^2.1.3",
