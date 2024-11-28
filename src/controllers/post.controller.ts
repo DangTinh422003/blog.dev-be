@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { BadRequestError } from '@/core/error.response';
 import postService from '@/services/post.service';
 
 class PostController {
