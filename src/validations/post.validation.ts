@@ -38,7 +38,6 @@ class PostValidation {
     }
     next();
   }
-
   async deletePost(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
     const { error } = schema.validate({
