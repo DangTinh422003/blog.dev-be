@@ -3,8 +3,20 @@ import { Request, Response } from 'express';
 
 class PostController {
   async createPost(req: Request, res: Response) {
-    const { title, content, user, image } = req.body;
-    res.send(await postService.createPost({ title, content, user, image }));
+    const { title, content, author, image } = req.body;
+    const { data, ...rest } = await postService.createPost({
+      title,
+      content,
+      author,
+      image,
+    });
+    const post = data!;
+    res.send({
+      ...rest,
+      data: {
+        post: post.post,
+      },
+    });
   }
   async getPosts(req: Request, res: Response) {
     res.send(await postService.getPosts());
@@ -14,9 +26,10 @@ class PostController {
     res.send(await postService.getPostById(postId));
   }
   async updatePost(req: Request, res: Response) {
-    const { postId, title, content, user, image } = req.body;
+    const { postId } = req.params;
+    const { title, content, author, image } = req.body;
     res.send(
-      await postService.updatePost({ postId, title, content, user, image }),
+      await postService.updatePost({ postId, title, content, author, image }),
     );
   }
   async deletePost(req: Request, res: Response) {

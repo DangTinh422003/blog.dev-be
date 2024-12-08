@@ -13,7 +13,7 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    user: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -21,6 +21,10 @@ const postSchema = new Schema(
     content: {
       type: String,
       required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
     createdAt: {
       type: Date,

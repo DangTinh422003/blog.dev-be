@@ -3,34 +3,36 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
 const schema = Joi.object({
-  postId: Joi.string().required(),
+  postId: Joi.string(),
   title: Joi.string().required(),
   content: Joi.string().required(),
-  user: Joi.string().required(),
+  author: Joi.string().required(),
   image: Joi.string().required(),
 });
 
 class PostValidation {
   async createPost(req: Request, res: Response, next: NextFunction) {
-    const { title, content, user, image } = req.body;
+    const { title, content, author, image } = req.body;
+    console.log(req.body);
     const { error } = schema.validate({
-      title,
-      content,
-      user,
-      image,
+      title: title,
+      content: content,
+      author: author,
+      image: image,
     });
+    console.log(error);
     if (error) {
       throw new BadRequestError(error.message);
     }
     next();
   }
   async updatePost(req: Request, res: Response, next: NextFunction) {
-    const { postId, title, content, user, image } = req.body;
+    const { postId, title, content, author, image } = req.body;
     const { error } = schema.validate({
       postId,
       title,
       content,
-      user,
+      author,
       image,
     });
     if (error) {

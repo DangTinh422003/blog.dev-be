@@ -7,20 +7,17 @@ import postController from '@/controllers/post.controller';
 const postRouter = express.Router();
 
 postRouter.post(
-  '/create-post',
+  '/create',
   handleError(postValidation.createPost),
   handleError(postController.createPost),
 );
-postRouter.get('/get-posts', handleError(postController.getPosts));
-postRouter.get('/get-post/:postId', handleError(postController.getPostById));
+postRouter.get('/posts', handleError(postController.getPosts));
+postRouter.get('/detail/:postId', handleError(postController.getPostById));
 postRouter.put(
-  '/update-post',
+  '/update/:postId',
   handleError(postValidation.updatePost),
   handleError(postController.updatePost),
 );
-postRouter.delete(
-  '/delete-post/:postId',
-  handleError(postController.deletePost),
-);
+postRouter.delete('/delete/:postId', handleError(postController.deletePost));
 
 export default postRouter;

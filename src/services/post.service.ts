@@ -1,87 +1,91 @@
-import postModel from '@/models/post.model';
-import { BadRequestError, ForbiddenError } from '@/core/error.response';
+import { BadRequestError, NotFoundError } from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
-import userModel from '@/models/user.model';
+import userRepo from '@/repository/user.repo';
+import postRepo from '@/repository/post.repo';
 
 class PostService {
   async createPost({
     title,
     content,
-    user,
+    author,
     image,
   }: {
     title: string;
     content: string;
-    user: string;
+    author: string;
     image: string;
   }) {
-    const checkUser = await userModel.findOne({ _id: user }).lean();
-    if (!checkUser) {
-      throw new ForbiddenError('User is not found');
+    const checkAuthor = await userRepo.findUserById(author);
+    if (!checkAuthor) {
+      throw new NotFoundError('User is not found');
     }
-    const newPost = await postModel.create({
+    const newPost = await postRepo.createPost({
       title,
       content,
-      user,
+      author,
       image,
     });
 
     if (!newPost) {
       throw new BadRequestError('Create post failed');
     }
-    return new OkResponse('Create post successfully');
+    return new OkResponse('Create post successfully', { post: newPost });
   }
 
   async getPosts() {
-    const posts = await postModel.find().populate('user', 'fullName').lean();
+    const posts = await postRepo.getAllPostWithAuthor();
     if (!posts) {
       throw new BadRequestError('Get posts failed');
     }
-    return new OkResponse('Get posts successfully', posts);
+    return new OkResponse('Get posts successfully', { posts });
   }
 
   async getPostById(postId: string) {
-    const post = await postModel
-      .findById(postId)
-      .populate('user', 'fullName')
-      .lean();
+    const post = await postRepo.getPostDetailByIdWithAuthor(postId);
     if (!post) {
       throw new BadRequestError('Post is not found');
     }
-    return new OkResponse('Get post successfully', post);
+    return new OkResponse('Get post successfully', { post });
   }
 
   async updatePost({
     postId,
     title,
     content,
-    user,
+    author,
     image,
   }: {
     postId: string;
     title: string;
     content: string;
-    user: string;
+    author: string;
     image: string;
   }) {
-    const updatePost = await postModel.findByIdAndUpdate(postId, {
+    const needUpdatePost = await postRepo.getPostById(postId);
+    if (!needUpdatePost) {
+      throw new NotFoundError('Post is not found');
+    }
+    if (needUpdatePost.author.toString() !== author) {
+      throw new BadRequestError('You dont have permission to update this post');
+    }
+    const updatePost = await postRepo.updatePostById(postId, {
       title,
       content,
-      user,
+      author,
       image,
     });
     if (!updatePost) {
       throw new BadRequestError('Update post failed');
     }
-    return new OkResponse('Update post successfully');
+    return new OkResponse('Update post successfully', { post: updatePost });
   }
 
   async deletePost(postId: string) {
-    const deletePost = await postModel.findByIdAndDelete(postId);
+    const deletePost = await postRepo.deletePostById(postId);
     if (!deletePost) {
       throw new BadRequestError('Delete post failed');
     }
-    return new OkResponse('Delete post successfully');
+    return new OkResponse('Delete post successfully', { post: deletePost });
   }
 }
 
