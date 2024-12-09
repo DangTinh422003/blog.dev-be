@@ -1,7 +1,6 @@
 import { BadRequestError, NotFoundError } from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
-import userRepo from '@/repository/user.repo';
-import postRepo from '@/repository/post.repo';
+import { postRepo, userRepo } from '@/repository';
 
 class PostService {
   async createPost({

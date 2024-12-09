@@ -1,12 +1,17 @@
-import postModel from '@/models/post.model';
-interface Post {
-  title: string;
-  content: string;
-  author: string;
-  image: string;
-}
+import { postModel } from '@/models';
+
 class PostRepo {
-  async createPost({ title, content, author, image }: Post) {
+  async createPost({
+    title,
+    content,
+    author,
+    image,
+  }: {
+    title: string;
+    content: string;
+    author: string;
+    image: string;
+  }) {
     const newPost = await postModel.create({
       title,
       content,
@@ -24,7 +29,15 @@ class PostRepo {
   async getPostDetailByIdWithAuthor(id: string) {
     return await postModel.findById(id).populate('author').lean();
   }
-  async updatePostById(id: string, data: Post) {
+  async updatePostById(
+    id: string,
+    data: {
+      title: string;
+      content: string;
+      author: string;
+      image: string;
+    },
+  ) {
     return await postModel.findByIdAndUpdate(id, data);
   }
   async deletePostById(id: string) {

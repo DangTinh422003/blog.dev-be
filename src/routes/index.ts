@@ -7,11 +7,12 @@ import userRouter from '@/routes/user';
 import postRouter from '@/routes/post';
 
 const router = express.Router();
+const authMiddleware = handleError(isAuthenticated);
 
 router.use('/access', accessRouter);
-router.use('/user', handleError(isAuthenticated), userRouter);
-router.use('/post', handleError(isAuthenticated), postRouter);
-router.get('/test', handleError(isAuthenticated), (req, res) => {
+router.use('/user', authMiddleware, userRouter);
+router.use('/post', authMiddleware, postRouter);
+router.get('/test', authMiddleware, (req, res) => {
   res.send('oke');
 });
 

@@ -1,4 +1,4 @@
-import accountModel from '@/models/account.model';
+import { accountModel } from '@/models';
 
 class AccountRepo {
   async createAccount({

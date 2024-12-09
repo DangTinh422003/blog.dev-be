@@ -1,4 +1,4 @@
-import userModel from '@/models/user.model';
+import { userModel } from "@/models";
 
 class UserRepo {
   async createUser({ email, fullName }: { email: string; fullName: string }) {

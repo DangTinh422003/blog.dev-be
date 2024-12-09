@@ -1,8 +1,7 @@
 import express from 'express';
 import { handleError } from '@/middlewares/handleError';
-import { isAuthenticated } from '@/middlewares/authentication';
-import postValidation from '@/validations/post.validation';
-import postController from '@/controllers/post.controller';
+import { postController } from '@/controllers';
+import { postValidation } from '@/validations';
 
 const postRouter = express.Router();
 

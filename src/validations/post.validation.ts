@@ -13,14 +13,12 @@ const schema = Joi.object({
 class PostValidation {
   async createPost(req: Request, res: Response, next: NextFunction) {
     const { title, content, author, image } = req.body;
-    console.log(req.body);
     const { error } = schema.validate({
       title: title,
       content: content,
       author: author,
       image: image,
     });
-    console.log(error);
     if (error) {
       throw new BadRequestError(error.message);
     }

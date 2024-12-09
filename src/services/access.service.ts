@@ -7,8 +7,7 @@ import {
 import { OkResponse } from '@/core/success.response';
 import tokenService from '@/services/token.service';
 import { JwtPayload } from 'jsonwebtoken';
-import userRepo from '@/repository/user.repo';
-import accountRepo from '@/repository/account.repo';
+import { accountRepo, userRepo } from '@/repository';
 
 class AccessService {
   async signUp({
