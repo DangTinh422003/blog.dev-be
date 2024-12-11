@@ -1,5 +1,9 @@
 import bcrypt from 'bcrypt';
-import { BadRequestError, ForbiddenError, UnauthorizedError } from '@/core/error.response';
+import {
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+} from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
 import accountModel from '@/models/account.model';
 import userModel, { User } from '@/models/user.model';

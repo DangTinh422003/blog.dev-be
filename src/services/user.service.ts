@@ -26,12 +26,9 @@ class UserService {
       throw new ConflictError('User not found');
     }
 
-    return new OkResponse(
-      {
-        user,
-      },
-      'User activated successfully',
-    );
+    return new OkResponse('User activated successfully', {
+      user,
+    });
   }
 }
 
