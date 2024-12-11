@@ -1,10 +1,13 @@
 import bcrypt from 'bcrypt';
-import { BadRequestError, ForbiddenError, UnauthorizedError } from '@/core/error.response';
+import {
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+} from '@/core/error.response';
 import { OkResponse } from '@/core/success.response';
-import accountModel from '@/models/account.model';
-import userModel, { User } from '@/models/user.model';
 import tokenService from '@/services/token.service';
 import { JwtPayload } from 'jsonwebtoken';
+import { accountRepo, userRepo } from '@/repository';
 
 class AccessService {
   async signUp({
@@ -21,11 +24,11 @@ class AccessService {
     const hashPassword = await bcrypt.hash(password, SALT);
 
     const [newUser, newAccount] = await Promise.all([
-      userModel.create({
+      userRepo.createUser({
         email,
         fullName: username,
       }),
-      accountModel.create({
+      accountRepo.createAccount({
         email,
         password: hashPassword,
       }),
@@ -39,7 +42,7 @@ class AccessService {
   }
 
   async signIn({ email }: { email: string }) {
-    const userHolder = await userModel.findOne({ email }).lean();
+    const userHolder = await userRepo.findUserByEmail(email);
     if (!userHolder) {
       throw new ForbiddenError('User is not found');
     }
