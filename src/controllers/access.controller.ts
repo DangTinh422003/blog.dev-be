@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import ms from 'ms';
 
 import { OkResponse } from '@/core/success.response';
-import accessService from '@/services/access.service';
+import { accessService } from '@/services';
 
 class AccessController {
   async signUp(req: Request, res: Response) {

@@ -1,8 +1,8 @@
 import express from 'express';
 
-import accessController from '@/controllers/access.controller';
 import { handleError } from '@/middlewares/handleError';
-import accessValidation from '@/validations/access.validation';
+import { accessController } from '@/controllers';
+import { accessValidation } from '@/validations';
 
 const accessRouter = express.Router();
 
